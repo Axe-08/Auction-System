@@ -1,0 +1,17 @@
+{
+  "name": "auction-system",
+  "version": "1.0.0",
+  "scripts": {
+    "init-db": "ts-node database/init.ts",
+    "start:server": "cd server && npm start",
+    "dev:server": "cd server && npm run dev",
+    "build:server": "cd server && npm run build",
+    "dev:admin": "cd clients/admin && npm run dev",
+    "dev:house": "cd clients/house && npm run dev",
+    "install:all": "npm install && cd server && npm install && cd ../clients/admin && npm install && cd ../house && npm install"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.2",
+    "ts-node": "^10.4.0"
+  }
+}
