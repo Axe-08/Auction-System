@@ -4,6 +4,10 @@ const config = {
         transports: ['websocket'],
         reconnection: true,
         reconnectionAttempts: 5,
-        reconnectionDelay: 1000
+        reconnectionDelay: 1000,
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"]
+        }
     }
 };

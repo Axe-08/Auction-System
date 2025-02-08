@@ -9,43 +9,57 @@ class CatalogueManager {
 
     static updateCatalogue() {
         const tbody = document.getElementById('catalogueList');
-        const paginationContainer = document.getElementById('cataloguePagination');
+        if (!tbody) {
+            console.error('Catalogue list element not found');
+            return;
+        }
 
-        let filteredCrew = AuctionState.crewMembers.filter(crew => {
-            const searchText = this.state.filterText.toLowerCase();
-            return (
-                crew.name.toLowerCase().includes(searchText) ||
-                crew.category.toLowerCase().includes(searchText) ||
-                (crew.buyer_name && crew.buyer_name.toLowerCase().includes(searchText))
-            );
-        });
-
-        if (this.state.sortField) {
-            filteredCrew.sort((a, b) => {
-                let aValue = a[this.state.sortField];
-                let bValue = b[this.state.sortField];
-
-                if (this.state.sortField === 'base_price' || this.state.sortField === 'current_bid') {
-                    aValue = Number(aValue);
-                    bValue = Number(bValue);
-                }
-
-                if (this.state.sortField === 'buyer_name') {
-                    aValue = aValue || '';
-                    bValue = bValue || '';
-                }
-
-                return this.state.sortDirection === 'asc' 
-                    ? aValue > bValue ? 1 : -1 
-                    : aValue < bValue ? 1 : -1;
+        let filteredCrew = State.crewMembers || [];
+        
+        // Filter logic
+        if (this.state.filterText) {
+            filteredCrew = filteredCrew.filter(crew => {
+                const searchText = this.state.filterText.toLowerCase();
+                return crew && (
+                    (crew.name && crew.name.toLowerCase().includes(searchText)) ||
+                    (crew.category && crew.category.toLowerCase().includes(searchText)) ||
+                    (crew.status && crew.status.toLowerCase().includes(searchText))
+                );
             });
         }
 
-        const totalPages = Math.ceil(filteredCrew.length / this.state.itemsPerPage);
-        const startIndex = (this.state.currentPage - 1) * this.state.itemsPerPage;
-        const paginatedCrew = filteredCrew.slice(startIndex, startIndex + this.state.itemsPerPage);
+        tbody.innerHTML = filteredCrew.map(crew => {
+            if (!crew) return '';
+            return `
+                <tr>
+                    <td>${crew.name || 'N/A'}</td>
+                    <td>${crew.category || 'N/A'}</td>
+                    <td>${crew.rating || 'N/A'}</td>
+                    <td>${((crew.base_price || 0) / 10000000).toFixed(2)}</td>
+                    <td>${((crew.current_bid || 0) / 10000000).toFixed(2)}</td>
+                    <td><span class="status ${crew.status || 'unknown'}">${(crew.status || 'UNKNOWN').toUpperCase()}</span></td>
+                    <td>${crew.buyer_name || '-'}</td>
+                </tr>
+            `;
+        }).join('');
+    }
 
-        tbody.innerHTML = paginatedCrew.map(crew => `
+    static sortCrew(a, b) {
+        let aValue = a[this.state.sortField];
+        let bValue = b[this.state.sortField];
+
+        if (this.state.sortField === 'base_price' || this.state.sortField === 'current_bid') {
+            aValue = Number(aValue);
+            bValue = Number(bValue);
+        }
+
+        return this.state.sortDirection === 'asc' 
+            ? aValue > bValue ? 1 : -1 
+            : aValue < bValue ? 1 : -1;
+    }
+
+    static renderCrewRow(crew) {
+        return `
             <tr>
                 <td>${crew.name}</td>
                 <td>${crew.category}</td>
@@ -55,21 +69,14 @@ class CatalogueManager {
                 <td><span class="status ${crew.status}">${crew.status.toUpperCase()}</span></td>
                 <td>${crew.buyer_name || '-'}</td>
             </tr>
-        `).join('');
-
-        paginationContainer.innerHTML = this.generatePaginationControls(totalPages);
+        `;
     }
 
     static generatePaginationControls(totalPages) {
         if (totalPages <= 1) return '';
 
         let controls = [];
-        controls.push(`
-            <button 
-                onclick="CatalogueManager.changePage(${this.state.currentPage - 1})"
-                ${this.state.currentPage === 1 ? 'disabled' : ''}
-            >Previous</button>
-        `);
+        controls.push(this.renderPaginationButton('Previous', this.state.currentPage - 1, this.state.currentPage === 1));
 
         for (let i = 1; i <= totalPages; i++) {
             if (
@@ -77,12 +84,7 @@ class CatalogueManager {
                 i === totalPages ||
                 (i >= this.state.currentPage - 2 && i <= this.state.currentPage + 2)
             ) {
-                controls.push(`
-                    <button 
-                        onclick="CatalogueManager.changePage(${i})"
-                        class="${i === this.state.currentPage ? 'active' : ''}"
-                    >${i}</button>
-                `);
+                controls.push(this.renderPaginationButton(i, i, false, i === this.state.currentPage));
             } else if (
                 i === this.state.currentPage - 3 ||
                 i === this.state.currentPage + 3
@@ -91,14 +93,20 @@ class CatalogueManager {
             }
         }
 
-        controls.push(`
-            <button 
-                onclick="CatalogueManager.changePage(${this.state.currentPage + 1})"
-                ${this.state.currentPage === totalPages ? 'disabled' : ''}
-            >Next</button>
-        `);
+        controls.push(this.renderPaginationButton('Next', this.state.currentPage + 1, 
+            this.state.currentPage === totalPages));
 
         return controls.join('');
+    }
+
+    static renderPaginationButton(text, page, disabled, active = false) {
+        return `
+            <button 
+                onclick="CatalogueManager.changePage(${page})"
+                ${disabled ? 'disabled' : ''}
+                class="${active ? 'active' : ''}"
+            >${text}</button>
+        `;
     }
 
     static changePage(page) {
@@ -117,8 +125,16 @@ class CatalogueManager {
     }
 
     static filter(text) {
-        this.state.filterText = text.toLowerCase();
+        this.state.filterText = text;
         this.state.currentPage = 1;
         this.updateCatalogue();
+    }
+
+    static updateBid(data) {
+        const crewIndex = State.crewMembers.findIndex(c => c.id === data.crewId);
+        if (crewIndex !== -1) {
+            State.crewMembers[crewIndex].current_bid = data.newBid;
+            this.updateCatalogue();
+        }
     }
 }

@@ -3,6 +3,134 @@
     margin: 0;
     padding: 0;
 }
+/* main.css */
+.header {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.house-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.budget-card {
+    background: #4caf50;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+}
+
+.stats-card {
+    background: #f8f9fa;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stats-title {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.stats-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.logout-btn {
+    padding: 8px 16px;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.requirement-card {
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    background: #ff9800;
+    color: white;
+    font-size: 13px;
+}
+
+.requirement-card.fulfilled {
+    background: #4caf50;
+}
+
+.requirement-card .title {
+    margin-bottom: 4px;
+}
+
+.tab-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.tab {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #e0e0e0;
+    transition: all 0.2s;
+}
+
+.tab.active {
+    background: #2196f3;
+    color: white;
+}
+
+.crew-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.crew-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.crew-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.crew-detail:last-child {
+    border-bottom: none;
+}
 
 body {
     font-family: Arial, sans-serif;
@@ -10,40 +138,27 @@ body {
     line-height: 1.6;
 }
 
-/* Layout */
+.logout-btn:hover {
+    background: #1976d2;
+}
+
+.budget {
+    background: #4caf50;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-/* Components */
-.card {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Navigation */
 .nav-tabs {
     display: flex;
     gap: 10px;
@@ -54,79 +169,36 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.tab {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    background: #e0e0e0;
-    transition: all 0.3s ease;
+
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
-.tab.active {
-    background: #2196f3;
-    color: white;
+
+.crew-card h3 {
+    margin-bottom: 10px;
+    color: #333;
 }
 
-/* Buttons and Inputs */
-button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    background: #2196f3;
-    color: white;
-    transition: all 0.3s ease;
+
+.rulebook {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-button:hover {
-    background: #1976d2;
+.rulebook h2 {
+    color: #333;
+    margin-bottom: 15px;
 }
 
-button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
+.rulebook section {
+    margin-bottom: 20px;
 }
 
-button.danger {
-    background: #f44336;
-}
-
-button.danger:hover {
-    background: #d32f2f;
-}
-
-input {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 100%;
-    max-width: 300px;
-}
-
-/* Status Indicators */
-.status {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: center;
-    min-width: 80px;
-    display: inline-block;
-}
-
-.status.available {
-    background: #4caf50;
-    color: white;
-}
-
-.status.sold {
-    background: #f44336;
-    color: white;
-}
-
-/* Tables */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -145,8 +217,25 @@ th {
     font-weight: bold;
 }
 
-/* Login Modal */
-.admin-login {
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status.available {
+    background: #4caf50;
+    color: white;
+}
+
+.status.sold {
+    background: #f44336;
+    color: white;
+}
+
+/* Login styles */
+.login-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -156,7 +245,6 @@ th {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
 }
 
 .login-box {
@@ -167,29 +255,47 @@ th {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Utilities */
+input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1976d2;
+}
+
+.error {
+    color: #f44336;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
 .hidden {
-    display: none !important;
+    display: none;
 }
-
-.flex {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.mb-20 {
-    margin-bottom: 20px;
-}
-
 
 .catalogue-header {
     cursor: pointer;
     user-select: none;
+    position: relative;
 }
 
-.catalogue-header:hover {
-    background-color: #f0f0f0;
+.catalogue-header:focus {
+    outline: 2px solid #2196f3;
+    outline-offset: -2px;
 }
 
 .sort-indicator {
@@ -220,6 +326,7 @@ th {
     border: 1px solid #ddd;
     background: white;
     color: #333;
+    width: auto;
 }
 
 .pagination button.active {
@@ -240,31 +347,209 @@ th {
     padding: 8px;
 }
 
-.event-log {
-    height: 400px;
-    overflow-y: auto;
-    padding: 15px;
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-family: monospace;
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-.log-entry {
-    padding: 8px;
-    margin-bottom: 5px;
+.stat label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.stat span {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Category Tabs Styling */
+
+
+.category-tabs button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: #e0e0e0;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-tabs button.active {
+    background: #2196f3;
+    color: white;
+}
+
+/* Requirements Display */
+.requirements-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+
+
+/* Stats Display */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+
+.crew-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
     border-bottom: 1px solid #eee;
+}
+
+.crew-stat:last-child {
+    border-bottom: none;
+}
+
+
+.flex-container {
+    display: flex;
+    gap: 20px;
+}
+
+/* Side tabs styling */
+.side-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 200px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.side-tabs .tab {
+    text-align: left;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background: #e0e0e0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.side-tabs .tab.active {
+    background: #2196f3;
+    color: white;
+}
+
+.side-tabs .tab:hover {
+    background: #1976d2;
+    color: white;
+}
+
+/* Crew content area */
+.crew-content {
+    flex: 1;
+}
+
+
+/* Requirements display */
+.stats-display {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+
+
+.requirement {
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
     font-size: 14px;
 }
 
-.log-entry.error {
-    color: #dc3545;
+.requirement.fulfilled {
+    background: #4caf50;
+    color: white;
 }
 
-.log-entry.success {
-    color: #28a745;
+.requirement.pending {
+    background: #ff9800;
+    color: white;
 }
 
-.log-entry.info {
-    color: #17a2b8;
+/* Update layout for crew type filters */
+.category-tabs {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;  /* In case of many tabs */
+    flex-wrap: nowrap;
+}
+
+
+.category-tabs .tab {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: #e0e0e0;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: fit-content;
+}
+
+.category-tabs .tab.active {
+    background: #2196f3;
+    color: white;
+}
+
+.category-tabs .tab:hover {
+    background: #1976d2;
+    color: white;
+}
+
+/* Requirements cards styling */
+.requirements-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.stats-cards {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+
+.stats-card h3 {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.stats-card .value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.requirement-card .count {
+    font-size: 14px;
+    font-weight: bold;
 }

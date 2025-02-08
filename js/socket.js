@@ -1,64 +1,64 @@
-// clients/admin/src/js/socket.js
+// clients/house/src/js/socket.js
 class SocketManager {
     static socket = null;
 
-    static initialize(token) {
+    static initialize(accessCode) {
         if (this.socket) {
             this.socket.disconnect();
         }
 
-        this.socket = io(config.API_URL, {
-            ...config.SOCKET_OPTIONS,
-            auth: { token }
-        });
-
-        this.setupListeners();
+        this.socket = io(config.API_URL, config.SOCKET_OPTIONS);
+        this.setupListeners(accessCode);
     }
-
-    static setupListeners() {
-        this.socket.on('connect_error', (error) => {
-            console.log('Socket connection error:', error);
-            Dashboard.log('Connection error: Retrying...', 'error');
-        });
-
-        this.socket.on('reconnect', (attemptNumber) => {
-            Dashboard.log(`Reconnected after ${attemptNumber} attempts`, 'success');
-            AuctionState.loadInitialData();
-        });
-
+    static setupListeners(accessCode) {
         this.socket.on('connect', () => {
-            document.getElementById('connectionStatus').textContent = 'Connected';
-            document.getElementById('connectionStatus').className = 'status available';
-            Dashboard.log('Connected to server', 'success');
+            console.log('Socket connected');
+            this.socket.emit('authenticate', accessCode);
         });
 
-        this.socket.on('disconnect', () => {
-            document.getElementById('connectionStatus').textContent = 'Disconnected';
-            document.getElementById('connectionStatus').className = 'status sold';
-            Dashboard.log('Disconnected from server', 'error');
+        this.socket.on('auth_success', (data) => {
+            console.log('Authentication successful:', data);
+            State.houseData = {
+                houseId: data.houseId,
+                houseName: data.houseName,
+                budget: 1000000000
+            };
+            Dashboard.updateHouseInfo();
         });
 
-        // Add all other socket event handlers
-        this.socket.on('bid_update', this.handleBidUpdate.bind(this));
-        this.socket.on('house_budget_updated', this.handleBudgetUpdate.bind(this));
-        this.socket.on('sale_complete', this.handleSaleComplete.bind(this));
+        this.socket.on('auth_error', (error) => {
+            console.error('Authentication error:', error);
+            Auth.showError(error);
+        });
+
+        this.socket.on('bid_update', (data) => {
+            console.log('Bid update received:', data);
+            CatalogueManager.updateBid(data);
+        });
+
+        this.socket.on('house_budget_updated', async (data) => {
+            console.log('Budget update received:', data);
+            if (data.houseId === State.houseData?.houseId) {
+                // Update budget in state
+                State.houseData.budget = data.budget;
+                await State.loadPurchasedCrew();
+                Dashboard.updateHouseInfo();
+                CatalogueManager.updateCatalogue();
+            }
+        });
+        this.socket.on('sale_complete', async (data) => {
+            console.log('Sale complete:', data);
+            if (data.productionHouseId === State.houseData?.houseId) {
+                await State.loadPurchasedCrew(); // Reload crew data
+            }
+            await State.loadCatalogue(); // Refresh catalogue regardless of buyer
+        });
     }
 
-    static handleBidUpdate(data) {
-        AuctionState.updateCrewMember(data.crewId, { current_bid: data.newBid });
-        Dashboard.log(`Bid updated: ₹${(data.newBid / 10000000).toFixed(2)} Cr`, 'info');
-    }
-
-    static handleBudgetUpdate(data) {
-        const house = AuctionState.houses.find(h => h.id === data.houseId);
-        if (house) {
-            house.budget = data.budget;
-            Dashboard.updateHousesList();
+    static disconnect() {
+        if (this.socket) {
+            this.socket.disconnect();
+            this.socket = null;
         }
-    }
-
-    static handleSaleComplete(data) {
-        Dashboard.log(`Sale completed: ₹${(data.purchasePrice / 10000000).toFixed(2)} Cr`, 'success');
-        AuctionState.loadInitialData();
     }
 }

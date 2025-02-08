@@ -1,80 +1,52 @@
 class Auth {
-    static async authenticate() {
-        const code = document.getElementById('adminCode').value;
-        const loginButton = document.getElementById('loginButton');
-        loginButton.textContent = 'Authenticating...';
-        loginButton.disabled = true;
-
+    static async login() {
         try {
-            const response = await fetch(`${config.API_URL}/api/admin/auth`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ accessCode: code })
-            });
-            const data = await response.json();
-
-            if (data.success && data.token) {
-                localStorage.setItem('adminToken', data.token);
-                this.showDashboard();
-                SocketManager.initialize(data.token);
-                AuctionState.loadInitialData();
-            } else {
-                this.showError(data.error || 'Invalid admin code');
+            const accessCode = document.getElementById('accessCode')?.value;
+            if (!accessCode) {
+                this.showError('Please enter an access code');
+                return;
             }
+
+            const data = await API.loadHouseData(accessCode);
+            console.log('Login response:', data);
+
+            // Show dashboard first
+            document.getElementById('loginScreen')?.classList.add('hidden');
+            document.getElementById('dashboard')?.classList.remove('hidden');
+
+            // Then initialize data
+            State.setHouseData(data);
+            SocketManager.initialize(accessCode);
+
+            // Load initial data
+            await Promise.all([
+                State.loadCatalogue(),
+                State.loadPurchasedCrew()
+            ]);
+
         } catch (error) {
-            this.showError('Authentication failed: ' + error.message);
-            console.error('Auth error:', error);
-        } finally {
-            loginButton.textContent = 'Login';
-            loginButton.disabled = false;
+            console.error('Login error:', error);
+            this.showError('Login failed: ' + error.message);
         }
-    }
-
-    static async verifyAndInitialize(token) {
-        try {
-            const response = await fetch(`${config.API_URL}/api/admin/verify`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await response.json();
-
-            if (data.success) {
-                this.showDashboard();
-                SocketManager.initialize(token);
-                AuctionState.loadInitialData();
-            } else {
-                this.logout();
-            }
-        } catch (error) {
-            console.error('Verification error:', error);
-            this.logout();
-        }
-    }
-
-    static showDashboard() {
-        document.getElementById('adminLogin').classList.add('hidden');
-        document.getElementById('adminDashboard').classList.remove('hidden');
     }
 
     static showError(message) {
         const errorElem = document.getElementById('loginError');
+        if (!errorElem) return;
+
         errorElem.textContent = message;
         errorElem.classList.remove('hidden');
         setTimeout(() => errorElem.classList.add('hidden'), 3000);
     }
 
     static logout() {
-        localStorage.removeItem('adminToken');
-        if (SocketManager.socket) {
-            SocketManager.socket.disconnect();
+        SocketManager.disconnect();
+        State.reset();
+        
+        document.getElementById('loginScreen')?.classList.remove('hidden');
+        document.getElementById('dashboard')?.classList.add('hidden');
+        if (document.getElementById('accessCode')) {
+            document.getElementById('accessCode').value = '';
         }
-        SocketManager.socket = null;
-        AuctionState.reset();
-        document.getElementById('adminDashboard').classList.add('hidden');
-        document.getElementById('adminLogin').classList.remove('hidden');
-        document.getElementById('adminCode').value = '';
     }
 }
