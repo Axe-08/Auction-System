@@ -241,13 +241,13 @@ async function initializeDatabase() {
         const productionHouses = [
             ['Red Chillies', 1000000000, 'RED001'],
             ['Dharma Productions', 1000000000, 'DHA001'],
-            ['Yash Raj Films', 1000000000, 'YRF001'],
+            ['Phantom ', 1000000000, 'YRF001'],
             ['Weinstein Company', 1000000000, 'WEIN001'],
-            ['Disney', 1000000000, 'DIS001'],
-            ['Fox Studios', 1000000000, 'FOX001'],
+            ['Disny', 1000000000, 'DIS001'],
+            ['Goldmines', 1000000000, 'FOX001'],
             ['Paramount Pictures', 1000000000, 'PAR001'],
-            ['DreamWorks', 1000000000, 'DW001'],
-            ['Warner Brothers', 1000000000, 'WB001']
+            ['Warner Brothers', 1000000000, 'WB001'],
+            ['Spectator',0,'SPEC']
         ];
 
         for (const house of productionHouses) {

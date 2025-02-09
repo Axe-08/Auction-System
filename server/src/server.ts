@@ -10,12 +10,16 @@ import authRoutes from './routes/auth';
 import crewRoutes from './routes/crew';
 import houseRoutes from './routes/house';
 import { debugLog } from './utils/debuglogger';
+import { initializeSocket } from './services/socketService';
 
 const app = express();
 const httpServer = createServer(app);
 
 // Initialize Socket.IO
 const io = new Server(httpServer, socketConfig);
+console.log('Creating Socket.IO server');
+initializeSocket(io);
+
 const socketHandlers = new SocketHandlers(io);
 
 // Middleware
@@ -35,6 +39,7 @@ app.use('/api', houseRoutes);
 
 // Initialize socket handling
 io.on('connection', (socket) => {
+    console.log('Client connected:', socket.id);
     socketHandlers.setupHandlers(socket);
 });
 

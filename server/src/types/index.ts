@@ -35,6 +35,17 @@ export interface SaleRequest {
     purchasePrice: number;
 }
 
+export interface AdminAuthRequest {
+    accessCode: string;
+}
+
+// server/src/types/index.ts
+export interface ProductionHouseWithBudget {
+    id: number;
+    name: string;
+    budget: number;
+}
+
 export interface SaleResult {
     success: boolean;
     error?: string;
@@ -42,9 +53,6 @@ export interface SaleResult {
         crewMemberId: number;
         productionHouseId: number;
         purchasePrice: number;
+        newBudget: number;  // Add this to the type
     };
-}
-
-export interface AdminAuthRequest {
-    accessCode: string;
 }

@@ -15,43 +15,35 @@ class SocketManager {
             console.log('Socket connected');
             this.socket.emit('authenticate', accessCode);
         });
-
-        this.socket.on('auth_success', (data) => {
-            console.log('Authentication successful:', data);
-            State.houseData = {
-                houseId: data.houseId,
-                houseName: data.houseName,
-                budget: 1000000000
-            };
-            Dashboard.updateHouseInfo();
+    
+        this.socket.on('sale_complete', async (data) => {
+            console.log('Received sale_complete event:', data);
+            try {
+                console.log('Starting catalogue reload');
+                await State.loadCatalogue();
+                console.log('Catalogue reloaded');
+                
+                if (data.productionHouseId === State.houseData?.houseId) {
+                    console.log('This house was the buyer, updating purchased crew');
+                    await State.loadPurchasedCrew();
+                    console.log('Purchased crew updated');
+                    Dashboard.updateHouseInfo();
+                    Dashboard.updateStatsAndRequirements();
+                }
+            } catch (error) {
+                console.error('Error handling sale_complete:', error);
+            }
         });
-
-        this.socket.on('auth_error', (error) => {
-            console.error('Authentication error:', error);
-            Auth.showError(error);
-        });
-
-        this.socket.on('bid_update', (data) => {
-            console.log('Bid update received:', data);
-            CatalogueManager.updateBid(data);
-        });
-
+    
         this.socket.on('house_budget_updated', async (data) => {
-            console.log('Budget update received:', data);
+            console.log('Received house_budget_updated event:', data);
             if (data.houseId === State.houseData?.houseId) {
-                // Update budget in state
+                console.log('Updating house budget:', data.budget);
                 State.houseData.budget = data.budget;
                 await State.loadPurchasedCrew();
                 Dashboard.updateHouseInfo();
                 CatalogueManager.updateCatalogue();
             }
-        });
-        this.socket.on('sale_complete', async (data) => {
-            console.log('Sale complete:', data);
-            if (data.productionHouseId === State.houseData?.houseId) {
-                await State.loadPurchasedCrew(); // Reload crew data
-            }
-            await State.loadCatalogue(); // Refresh catalogue regardless of buyer
         });
     }
 
