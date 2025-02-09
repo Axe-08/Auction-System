@@ -124,7 +124,6 @@ class CatalogueManager {
                 <td>${crew.category}</td>
                 <td>${crew.rating}</td>
                 <td>${(crew.base_price / 10000000).toFixed(2)}</td>
-                <td>${(crew.current_bid / 10000000).toFixed(2)}</td>
                 <td><span class="status ${crew.status}">${crew.status.toUpperCase()}</span></td>
                 <td>${crew.buyer_name || '-'}</td>
             </tr>
