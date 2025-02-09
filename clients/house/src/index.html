@@ -64,17 +64,29 @@
                     <table>
                         <thead>
                             <tr>
-                                <th onclick="CatalogueManager.sort('name')">Name</th>
-                                <th onclick="CatalogueManager.sort('category')">Category</th>
-                                <th onclick="CatalogueManager.sort('rating')">Rating</th>
-                                <th onclick="CatalogueManager.sort('base_price')">Base Price (Cr)</th>
-                                <th onclick="CatalogueManager.sort('status')">Status</th>
-                                <th onclick="CatalogueManager.sort('buyer_name')">Buyer</th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('name')">
+                                    Name <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('category')">
+                                    Category <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('rating')">
+                                    Rating <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('base_price')">
+                                    Base Price (Cr) <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('status')">
+                                    Status <span class="sort-indicator">↕</span>
+                                </th>
+                                <th class="catalogue-header" onclick="CatalogueManager.sort('buyer_name')">
+                                    Buyer <span class="sort-indicator">↕</span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="catalogueList"></tbody>
                     </table>
-                    <div id="cataloguePagination"></div>
+                    <div id="cataloguePagination" class="pagination"></div>
                 </div>
             </div>
 

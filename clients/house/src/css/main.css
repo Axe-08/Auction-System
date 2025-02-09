@@ -32,6 +32,57 @@
     color: white;
 }
 
+.catalogue-header {
+    cursor: pointer;
+    user-select: none;
+}
+
+.catalogue-header:hover {
+    background-color: #f5f5f5;
+}
+
+.sort-indicator {
+    opacity: 0.3;
+    margin-left: 5px;
+}
+
+.catalogue-header.sorted .sort-indicator {
+    opacity: 1;
+}
+
+.catalogue-header.sorted.asc .sort-indicator::after {
+    content: "↑";
+}
+
+.catalogue-header.sorted.desc .sort-indicator::after {
+    content: "↓";
+}
+
+.pagination {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background: #2196f3;
+    color: white;
+    border-color: #2196f3;
+}
+
+.pagination button:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
 .stats-card {
     background: #f8f9fa;
     padding: 12px 20px;
@@ -287,24 +338,13 @@ button:hover {
     display: none;
 }
 
-.catalogue-header {
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-}
+
 
 .catalogue-header:focus {
     outline: 2px solid #2196f3;
     outline-offset: -2px;
 }
 
-.sort-indicator {
-    opacity: 0.3;
-}
-
-.catalogue-header.sorted .sort-indicator {
-    opacity: 1;
-}
 
 .catalogue-header.sorted.asc .sort-indicator {
     content: "↑";
@@ -314,32 +354,6 @@ button:hover {
     content: "↓";
 }
 
-.pagination {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination button {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    background: white;
-    color: #333;
-    width: auto;
-}
-
-.pagination button.active {
-    background: #2196f3;
-    color: white;
-    border-color: #2196f3;
-}
-
-.pagination button:disabled {
-    background: #f5f5f5;
-    color: #999;
-    cursor: not-allowed;
-}
 
 .counter {
     color: #666;

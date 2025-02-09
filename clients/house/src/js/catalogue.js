@@ -9,26 +9,64 @@ class CatalogueManager {
 
     static updateCatalogue() {
         const tbody = document.getElementById('catalogueList');
+        const paginationContainer = document.getElementById('cataloguePagination');
+        
         if (!tbody) {
             console.error('Catalogue list element not found');
             return;
         }
 
+        // Get and filter crew members
         let filteredCrew = State.crewMembers || [];
         
-        // Filter logic
         if (this.state.filterText) {
-            filteredCrew = filteredCrew.filter(crew => {
-                const searchText = this.state.filterText.toLowerCase();
-                return crew && (
+            const searchText = this.state.filterText.toLowerCase();
+            filteredCrew = filteredCrew.filter(crew => 
+                crew && (
                     (crew.name && crew.name.toLowerCase().includes(searchText)) ||
                     (crew.category && crew.category.toLowerCase().includes(searchText)) ||
                     (crew.status && crew.status.toLowerCase().includes(searchText))
-                );
+                )
+            );
+        }
+
+        // Sort if a sort field is selected
+        if (this.state.sortField) {
+            filteredCrew.sort((a, b) => {
+                let aValue = a[this.state.sortField];
+                let bValue = b[this.state.sortField];
+
+                // Handle numeric values
+                if (this.state.sortField === 'base_price' || 
+                    this.state.sortField === 'current_bid' ||
+                    this.state.sortField === 'rating') {
+                    aValue = Number(aValue) || 0;
+                    bValue = Number(bValue) || 0;
+                }
+
+                // Handle string values
+                if (typeof aValue === 'string') {
+                    aValue = aValue.toLowerCase();
+                }
+                if (typeof bValue === 'string') {
+                    bValue = bValue.toLowerCase();
+                }
+
+                if (this.state.sortDirection === 'asc') {
+                    return aValue > bValue ? 1 : -1;
+                } else {
+                    return aValue < bValue ? 1 : -1;
+                }
             });
         }
 
-        tbody.innerHTML = filteredCrew.map(crew => {
+        // Calculate pagination
+        const totalPages = Math.ceil(filteredCrew.length / this.state.itemsPerPage);
+        const startIndex = (this.state.currentPage - 1) * this.state.itemsPerPage;
+        const paginatedCrew = filteredCrew.slice(startIndex, startIndex + this.state.itemsPerPage);
+
+        // Update table content
+        tbody.innerHTML = paginatedCrew.map(crew => {
             if (!crew) return '';
             return `
                 <tr>
@@ -36,13 +74,34 @@ class CatalogueManager {
                     <td>${crew.category || 'N/A'}</td>
                     <td>${crew.rating || 'N/A'}</td>
                     <td>${((crew.base_price || 0) / 10000000).toFixed(2)}</td>
-                    <td>${((crew.current_bid || 0) / 10000000).toFixed(2)}</td>
-                    <td><span class="status ${crew.status || 'unknown'}">${(crew.status || 'UNKNOWN').toUpperCase()}</span></td>
+                    <td><span class="status ${crew.status || 'available'}">${(crew.status || 'AVAILABLE').toUpperCase()}</span></td>
                     <td>${crew.buyer_name || '-'}</td>
                 </tr>
             `;
         }).join('');
+
+        // Update pagination controls
+        if (paginationContainer) {
+            paginationContainer.innerHTML = this.generatePaginationControls(totalPages);
+        }
+
+        // Update counter if it exists
+        const counter = document.getElementById('catalogueCounter');
+        if (counter) {
+            counter.textContent = `Showing ${startIndex + 1}-${Math.min(startIndex + this.state.itemsPerPage, filteredCrew.length)} of ${filteredCrew.length}`;
+        }
+
+        // Update sort indicators
+        document.querySelectorAll('.catalogue-header').forEach(header => {
+            const field = header.getAttribute('onclick')?.match(/sort\('(.+?)'\)/)?.[1];
+            if (field === this.state.sortField) {
+                header.classList.add('sorted', this.state.sortDirection);
+            } else {
+                header.classList.remove('sorted', 'asc', 'desc');
+            }
+        });
     }
+
 
     static sortCrew(a, b) {
         let aValue = a[this.state.sortField];

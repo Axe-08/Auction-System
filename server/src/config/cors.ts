@@ -5,11 +5,10 @@ export const corsOptions: CorsOptions = {
     origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
         console.log('Request origin:', origin);
         const allowedOrigins = [
-            'https://axe-08.github.io',
-            'http://localhost:8080',
-            'http://localhost:8081',
-            'http://192.168.56.1:8080',
-            'http://192.168.56.1:8081',
+            'https://axe-08.github.io',  // ✅ Add your GitHub Pages URL
+            'https://movie-auction-admin.github.io', // ✅ Add if different
+            'https://movie-auction-house.github.io', // ✅ Add if different
+            'http://localhost:3000',  // ✅ Allow local testing
             undefined
         ];
         if (allowedOrigins.includes(origin)) {

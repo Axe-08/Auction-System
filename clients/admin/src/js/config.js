@@ -1,5 +1,5 @@
 const config = {
-    API_URL: 'https://fragrance-consultant-keyboard-defence.trycloudflare.com',
+    API_URL: 'https://payment-spectrum-permission-follow.trycloudflare.com',
     SOCKET_OPTIONS: {
         transports: ['websocket'],
         reconnection: true,
