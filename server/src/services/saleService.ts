@@ -25,7 +25,8 @@ export async function processSaleTransaction(
                         return;
                     }
 
-                    const newBudget = house.budget - purchasePrice;
+                    const newBudget = house.budget 
+                    //- purchasePrice;
 
                     // First update crew status
                     db.run(
