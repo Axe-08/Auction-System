@@ -11,6 +11,7 @@ import crewRoutes from './routes/crew';
 import houseRoutes from './routes/house';
 import { debugLog } from './utils/debuglogger';
 import { initializeSocket } from './services/socketService';
+import db from './config/database';
 
 const app = express();
 const httpServer = createServer(app);
@@ -51,6 +52,8 @@ httpServer.listen(PORT, HOST, () => {
     debugLog(`Server started at ${new Date().toISOString()}`);
     debugLog(`Listening on port ${PORT}`);
 });
+
+db.run("UPDATE INTO CREW ")
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

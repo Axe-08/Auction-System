@@ -21,7 +21,8 @@ class Auth {
             // Load initial data
             await Promise.all([
                 State.loadCatalogue(),
-                State.loadPurchasedCrew()
+                State.loadPurchasedCrew(),
+                State.loadHouseStats()
             ]);
 
         } catch (error) {

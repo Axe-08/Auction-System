@@ -3,6 +3,7 @@ class State {
     static houseData = null;
     static crewMembers = [];
     static purchasedCrew = [];
+    static leaderboardData = null; 
 
     static async loadCatalogue() {
         try {
@@ -64,6 +65,23 @@ class State {
         };
         setTimeout(() => Dashboard.updateHouseInfo(), 0);
      
+    }
+
+    static async loadHouseStats() {
+        try {
+            const leaderboard = await API.getLeaderboard();
+            const houseStats = leaderboard.find(h => h.id === this.houseData?.houseId);
+            if (houseStats) {
+                this.leaderboardData = houseStats;
+                Dashboard.updateHouseInfo();
+            }
+        } catch (error) {
+            console.error('Failed to load house stats:', error);
+        }
+    }
+
+    static getHouseStats() {
+        return this.leaderboardData;
     }
 
     static reset() {

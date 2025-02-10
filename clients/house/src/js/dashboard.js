@@ -17,55 +17,54 @@ class Dashboard {
     static updateHouseInfo() {
         if (!State.houseData) return;
 
-        try {
-            // Update house name and budget
-            const houseName = document.getElementById('houseName');
-            const totalBudget = document.getElementById('totalBudget');
-            const remainingBudget = document.getElementById('remainingBudget');
+        // Update house name and budget
+        document.getElementById('houseName').textContent = State.houseData.houseName;
+        document.getElementById('totalBudget').textContent = (State.houseData.budget / 10000000).toFixed(2);
+        const remainingBudget = State.calculateRemainingBudget() / 10000000;
+        document.getElementById('remainingBudget').textContent = remainingBudget.toFixed(2);
 
-            if (houseName) houseName.textContent = State.houseData.houseName;
-            if (totalBudget) totalBudget.textContent = (State.houseData.budget / 10000000).toFixed(2);
-            
-            const remaining = State.calculateRemainingBudget() / 10000000;
-            if (remainingBudget) remainingBudget.textContent = remaining.toFixed(2);
-
-            // Now update stats and requirements
-            this.updateStatsAndRequirements();
-        } catch (error) {
-            console.error('Error updating house info:', error);
-        }
-    }
-
-    static updateStatsAndRequirements() {
-        try {
-            // Update average rating
-            const avgRating = document.getElementById('avgRating');
-            if (avgRating) {
-                avgRating.textContent = this.calculateAverageRating();
-            }
-
-            // Update total crew
-            const totalCrew = document.getElementById('totalCrew');
-            if (totalCrew) {
-                totalCrew.textContent = State.purchasedCrew.length;
-            }
+        // Get stats from leaderboard data
+        const houseStats = State.getHouseStats();
+        if (houseStats) {
+            document.getElementById('avgRating').textContent = 
+                houseStats.average_rating ? houseStats.average_rating.toFixed(2) : 'N/A';
+            document.getElementById('totalCrew').textContent = houseStats.crew_count || 0;
 
             // Update requirements
-            const requirements = this.checkRequirements();
             const requirementsGrid = document.getElementById('requirementsGrid');
-            
             if (requirementsGrid) {
-                requirementsGrid.innerHTML = Object.entries(requirements).map(([category, data]) => `
-                    <div class="requirement-card ${data.current >= data.required ? 'fulfilled' : 'pending'}">
-                        <div class="title">${category}</div>
-                        <div class="count">${data.current}/${data.required}</div>
+                const requirements = [
+                    { name: 'Lead Actor', required: 3, current: houseStats.lead_actors || 0 },
+                    { name: 'Supporting Actor', required: 2, current: houseStats.supporting_actors || 0 },
+                    { name: 'Musician', required: 1, current: houseStats.musicians || 0 },
+                    { name: 'Director', required: 1, current: houseStats.directors || 0 },
+                    { name: 'Nepo Kid', required: 1, current: houseStats.nepo_kids || 0 },
+                    { name: 'Comedic Relief', required: 1, current: houseStats.comedic_relief || 0 }
+                ];
+
+                requirementsGrid.innerHTML = requirements.map(req => `
+                    <div class="requirement-card ${req.current >= req.required ? 'fulfilled' : 'pending'}">
+                        <div class="title">${req.name}</div>
+                        <div class="count">${req.current}/${req.required}</div>
                     </div>
                 `).join('');
             }
-        } catch (error) {
-            console.error('Error updating stats and requirements:', error);
+        }
+
+        // Update budget color
+        const budgetElement = document.querySelector('.budget');
+        if (budgetElement) {
+            const remainingPercentage = (remainingBudget * 10000000 / State.houseData.budget) * 100;
+            if (remainingPercentage < 20) {
+                budgetElement.style.background = '#f44336';
+            } else if (remainingPercentage < 50) {
+                budgetElement.style.background = '#ff9800';
+            } else {
+                budgetElement.style.background = '#4caf50';
+            }
         }
     }
+
 
     static checkRequirements() {
         const requirements = {

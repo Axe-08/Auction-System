@@ -1,7 +1,7 @@
 const config = {
-    API_URL: 'https://sheet-stamps-products-website.trycloudflare.com',
+    API_URL: 'https://drop-academics-speech-substance.trycloudflare.com',
     SOCKET_OPTIONS: {
-        
+
         transports: ['websocket'],
         reconnection: true,
         reconnectionAttempts: 5,

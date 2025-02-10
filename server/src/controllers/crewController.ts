@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import db from '../config/database';
 import { processSaleTransaction } from '../services/saleService';
-import { getIO } from '../services/socketService';
+import { emitWithRetry } from '../services/socketService';
 
 export class CrewController {
     async getAllCrew(req: Request, res: Response) {
@@ -44,41 +44,28 @@ export class CrewController {
 
     async sellCrewMember(req: Request, res: Response) {
         const { crewMemberId, productionHouseId, purchasePrice } = req.body;
-        console.log('Sale requested:', { crewMemberId, productionHouseId, purchasePrice });
         
         try {
             const result = await processSaleTransaction(crewMemberId, productionHouseId, purchasePrice);
-            console.log('Sale transaction result:', result);
-    
             if (result.success) {
-                const io = getIO();
-                console.log('Emitting sale_complete event:', {
-                    crewMemberId,
-                    productionHouseId,
-                    purchasePrice
-                });
-                
-                // Emit sale completion event
-                io.emit('sale_complete', {
+                // Use emitWithRetry for more reliable socket communication
+                const saleEmitted = await emitWithRetry('sale_complete', {
                     crewMemberId,
                     productionHouseId,
                     purchasePrice
                 });
     
-                console.log('Emitting house_budget_updated event:', {
+                const budgetEmitted = await emitWithRetry('house_budget_updated', {
                     houseId: productionHouseId,
                     budget: result.data?.newBudget
                 });
     
-                // Emit budget update
-                io.emit('house_budget_updated', {
-                    houseId: productionHouseId,
-                    budget: result.data?.newBudget
-                });
+                if (!saleEmitted || !budgetEmitted) {
+                    console.warn('Some socket events failed to emit');
+                }
     
                 res.json({ success: true });
             } else {
-                console.log('Sale failed:', result.error);
                 res.status(400).json({ success: false, error: result.error });
             }
         } catch (error) {

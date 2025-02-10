@@ -239,14 +239,14 @@ async function initializeDatabase() {
 
         // Insert test production houses
         const productionHouses = [
-            ['Red Chillies', 1000000000, 'RED001'],
-            ['Dharma Productions', 1000000000, 'DHA001'],
-            ['Phantom ', 1000000000, 'YRF001'],
-            ['Weinstein Company', 1000000000, 'WEIN001'],
-            ['Disny', 1000000000, 'DIS001'],
-            ['Goldmines', 1000000000, 'FOX001'],
-            ['Paramount Pictures', 1000000000, 'PAR001'],
-            ['Warner Brothers', 1000000000, 'WB001'],
+            ['Red Chillies Entertainment', 1000000000, 'VJ3WXS'],
+            ['Dharma Productions', 1000000000, 'LTT6X2'],
+            ['Phantom Productions', 1000000000, 'B9NIT4'],
+            ['Weinstein Company', 1000000000, 'TN14TM'],
+            ['Walt Disney', 1000000000, 'GINF52'],
+            ['Goldmines Telefilms', 1000000000, 'GA02NG'],
+            ['Paramount Pictures', 1000000000, 'YOAN6M'],
+            ['Warner Brothers', 1000000000, 'SON42G'],
             ['Spectator',0,'SPEC']
         ];
 
